@@ -262,6 +262,8 @@ defmodule NervesHubLink.Socket do
   end
 
   defp handle_join_reply(%{"firmware_url" => url} = update) when is_binary(url) do
+    PropertyTable.put(NervesHubLink, ["update_available"], true)
+
     case NervesHubLinkCommon.Message.UpdateInfo.parse(update) do
       {:ok, %NervesHubLinkCommon.Message.UpdateInfo{} = info} ->
         UpdateManager.apply_update(info)
@@ -272,7 +274,10 @@ defmodule NervesHubLink.Socket do
     end
   end
 
-  defp handle_join_reply(_), do: :noop
+  defp handle_join_reply(_) do
+    PropertyTable.put(NervesHubLink, ["update_available"], false)
+    :noop
+  end
 
   defp maybe_join_console(socket) do
     if socket.assigns.remote_iex do
