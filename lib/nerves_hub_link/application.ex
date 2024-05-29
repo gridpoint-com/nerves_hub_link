@@ -22,6 +22,12 @@ defmodule NervesHubLink.Application do
     }
 
     children = [
+      {PropertyTable,
+       name: NervesHubLink,
+       properties: [
+         {["status"], :disconnected},
+         {["update_available"], nil}
+       ]},
       {UpdateManager, fwup_config},
       Connection,
       {Socket, config}

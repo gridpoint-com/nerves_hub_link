@@ -95,6 +95,7 @@ defmodule NervesHubLink.Connection do
   """
   @spec connected() :: :ok
   def connected() do
+    PropertyTable.put(NervesHubLink, ["status"], :connected)
     Agent.update(__MODULE__, fn _ -> {:connected, current_time()} end)
   end
 
@@ -103,6 +104,8 @@ defmodule NervesHubLink.Connection do
   """
   @spec disconnected() :: :ok
   def disconnected() do
+    PropertyTable.put(NervesHubLink, ["status"], :disconnected)
+
     # If we are already in a disconnected state, then don't
     # overwrite the existing value so we can measure from
     # the first point of disconnect
